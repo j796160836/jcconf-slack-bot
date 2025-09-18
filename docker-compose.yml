@@ -1,0 +1,30 @@
+services:
+  jcconf-slack-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jcconf-slack-bot
+    restart: unless-stopped
+    environment:
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - SCHEDULE_URL=${SCHEDULE_URL}
+      - TZ=Asia/Taipei
+    env_file:
+      - .env
+    volumes:
+      # 掛載日誌目錄 (可選)
+      - ./logs:/app/logs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    # 資源限制
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
